@@ -1,0 +1,6 @@
+{
+  "name": "Pendaftaran Pesta Penggalang Muara Kaman",
+  "description": "Formulir Pendaftaran Sekolah Gerakan Pramuka Pesta Penggalang Kwartir Ranting Kecamatan Muara Kaman.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

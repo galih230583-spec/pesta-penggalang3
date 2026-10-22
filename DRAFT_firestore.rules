@@ -1,0 +1,310 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // 1. Global Safety Net (Default-Deny Catch-All)
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Primitive Helpers
+    function isValidId(id) {
+      return id is string && id.size() >= 1 && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    function isValidPaymentProof(proof) {
+      return proof == null || (
+        proof is map &&
+        proof.keys().hasAll(['fileName', 'fileSize', 'fileType', 'dataUrl', 'uploadedAt']) &&
+        proof.keys().hasOnly(['fileName', 'fileSize', 'fileType', 'dataUrl', 'uploadedAt']) &&
+        proof.fileName is string && proof.fileName.size() <= 300 &&
+        (proof.fileSize is int || proof.fileSize is float) && proof.fileSize >= 0 && proof.fileSize <= 10485760 &&
+        proof.fileType is string && proof.fileType.size() <= 120 &&
+        proof.dataUrl is string && proof.dataUrl.size() <= 950000 &&
+        proof.uploadedAt is string && proof.uploadedAt.size() <= 64
+      );
+    }
+
+    function isValidCoreFields(data, registrationId) {
+      return data.id is string && data.id == registrationId && data.id.size() >= 1 && data.id.size() <= 128 && data.id.matches('^[a-zA-Z0-9_\\-]+$') &&
+        data.nomorRegistrasi is string && data.nomorRegistrasi.size() <= 64 &&
+        data.tanggalDaftar is string && data.tanggalDaftar.size() <= 100 &&
+        data.namaSekolah is string && data.namaSekolah.size() >= 1 && data.namaSekolah.size() <= 200 &&
+        data.namaKepalaSekolah is string && data.namaKepalaSekolah.size() <= 200 &&
+        data.nipKepalaSekolah is string && data.nipKepalaSekolah.size() <= 64 &&
+        data.namaPembinaPutra is string && data.namaPembinaPutra.size() <= 200 &&
+        data.nipPembinaPutra is string && data.nipPembinaPutra.size() <= 64 &&
+        data.namaPembinaPutra2 is string && data.namaPembinaPutra2.size() <= 200 &&
+        data.nipPembinaPutra2 is string && data.nipPembinaPutra2.size() <= 64 &&
+        data.namaPembinaPutri is string && data.namaPembinaPutri.size() <= 200 &&
+        data.nipPembinaPutri is string && data.nipPembinaPutri.size() <= 64 &&
+        data.namaPembinaPutri2 is string && data.namaPembinaPutri2.size() <= 200 &&
+        data.nipPembinaPutri2 is string && data.nipPembinaPutri2.size() <= 64 &&
+        data.namaReguPutra is string && data.namaReguPutra.size() <= 120 &&
+        data.namaReguPutri is string && data.namaReguPutri.size() <= 120 &&
+        data.pesertaPutra is list && data.pesertaPutra.size() == 8 && data.pesertaPutra[0] is string && data.pesertaPutra[0].size() <= 160 &&
+        data.tempatLahirPutra is list && data.tempatLahirPutra.size() == 8 && data.tempatLahirPutra[0] is string && data.tempatLahirPutra[0].size() <= 120 &&
+        data.tanggalLahirPutra is list && data.tanggalLahirPutra.size() == 8 && data.tanggalLahirPutra[0] is string && data.tanggalLahirPutra[0].size() <= 32 &&
+        data.pesertaPutri is list && data.pesertaPutri.size() == 8 && data.pesertaPutri[0] is string && data.pesertaPutri[0].size() <= 160 &&
+        data.tempatLahirPutri is list && data.tempatLahirPutri.size() == 8 && data.tempatLahirPutri[0] is string && data.tempatLahirPutri[0].size() <= 120 &&
+        data.tanggalLahirPutri is list && data.tanggalLahirPutri.size() == 8 && data.tanggalLahirPutri[0] is string && data.tanggalLahirPutri[0].size() <= 32 &&
+        (data.jumlahRegu is int || data.jumlahRegu is float) && data.jumlahRegu >= 1 && data.jumlahRegu <= 10 &&
+        (data.totalBiaya is int || data.totalBiaya is float) && data.totalBiaya >= 0 && data.totalBiaya <= 100000000 &&
+        data.statusVerifikasi is string && data.statusVerifikasi.size() <= 40 &&
+        (data.statusVerifikasi == 'Menunggu Verifikasi' || data.statusVerifikasi == 'Terverifikasi') &&
+        data.pernyataanBenar is bool &&
+        data.pernyataanBenar == true &&
+        isValidPaymentProof(data.buktiPembayaran) &&
+        data.createdAt is timestamp &&
+        data.updatedAt is timestamp;
+    }
+
+    function isValidRegistration(data, registrationId) {
+      return data.keys().hasAll([
+          'id',
+          'nomorRegistrasi',
+          'tanggalDaftar',
+          'namaSekolah',
+          'namaKepalaSekolah',
+          'nipKepalaSekolah',
+          'namaPembinaPutra',
+          'nipPembinaPutra',
+          'namaPembinaPutra2',
+          'nipPembinaPutra2',
+          'namaPembinaPutri',
+          'nipPembinaPutri',
+          'namaPembinaPutri2',
+          'nipPembinaPutri2',
+          'namaReguPutra',
+          'namaReguPutri',
+          'pesertaPutra',
+          'tempatLahirPutra',
+          'tanggalLahirPutra',
+          'pesertaPutri',
+          'tempatLahirPutri',
+          'tanggalLahirPutri',
+          'jumlahRegu',
+          'totalBiaya',
+          'statusVerifikasi',
+          'pernyataanBenar',
+          'buktiPembayaran',
+          'createdAt',
+          'updatedAt'
+        ]) &&
+        data.keys().hasOnly([
+          'id',
+          'nomorRegistrasi',
+          'tanggalDaftar',
+          'namaSekolah',
+          'namaKepalaSekolah',
+          'nipKepalaSekolah',
+          'namaPembinaPutra',
+          'nipPembinaPutra',
+          'namaPembinaPutra2',
+          'nipPembinaPutra2',
+          'namaPembinaPutri',
+          'nipPembinaPutri',
+          'namaPembinaPutri2',
+          'nipPembinaPutri2',
+          'namaReguPutra',
+          'namaReguPutri',
+          'pesertaPutra',
+          'tempatLahirPutra',
+          'tanggalLahirPutra',
+          'pesertaPutri',
+          'tempatLahirPutri',
+          'tanggalLahirPutri',
+          'jumlahRegu',
+          'totalBiaya',
+          'statusVerifikasi',
+          'pernyataanBenar',
+          'buktiPembayaran',
+          'createdAt',
+          'updatedAt'
+        ]) &&
+        isValidCoreFields(data, registrationId);
+    }
+
+    function isValidDeletedRegistration(data, registrationId) {
+      return data.keys().hasAll([
+          'id',
+          'nomorRegistrasi',
+          'tanggalDaftar',
+          'tanggalDihapus',
+          'namaSekolah',
+          'namaKepalaSekolah',
+          'nipKepalaSekolah',
+          'namaPembinaPutra',
+          'nipPembinaPutra',
+          'namaPembinaPutra2',
+          'nipPembinaPutra2',
+          'namaPembinaPutri',
+          'nipPembinaPutri',
+          'namaPembinaPutri2',
+          'nipPembinaPutri2',
+          'namaReguPutra',
+          'namaReguPutri',
+          'pesertaPutra',
+          'tempatLahirPutra',
+          'tanggalLahirPutra',
+          'pesertaPutri',
+          'tempatLahirPutri',
+          'tanggalLahirPutri',
+          'jumlahRegu',
+          'totalBiaya',
+          'statusVerifikasi',
+          'pernyataanBenar',
+          'buktiPembayaran',
+          'createdAt',
+          'updatedAt'
+        ]) &&
+        data.keys().hasOnly([
+          'id',
+          'nomorRegistrasi',
+          'tanggalDaftar',
+          'tanggalDihapus',
+          'namaSekolah',
+          'namaKepalaSekolah',
+          'nipKepalaSekolah',
+          'namaPembinaPutra',
+          'nipPembinaPutra',
+          'namaPembinaPutra2',
+          'nipPembinaPutra2',
+          'namaPembinaPutri',
+          'nipPembinaPutri',
+          'namaPembinaPutri2',
+          'nipPembinaPutri2',
+          'namaReguPutra',
+          'namaReguPutri',
+          'pesertaPutra',
+          'tempatLahirPutra',
+          'tanggalLahirPutra',
+          'pesertaPutri',
+          'tempatLahirPutri',
+          'tanggalLahirPutri',
+          'jumlahRegu',
+          'totalBiaya',
+          'statusVerifikasi',
+          'pernyataanBenar',
+          'buktiPembayaran',
+          'createdAt',
+          'updatedAt'
+        ]) &&
+        data.tanggalDihapus is string && data.tanggalDihapus.size() <= 100 &&
+        isValidCoreFields(data, registrationId);
+    }
+
+    match /registrations/{registrationId} {
+      allow get: if isValidId(registrationId);
+      allow list: if resource.data.pernyataanBenar == true &&
+        request.query.limit != null &&
+        request.query.limit <= 500;
+
+      allow create: if isValidId(registrationId) &&
+        isValidRegistration(incoming(), registrationId) &&
+        incoming().createdAt == request.time &&
+        incoming().updatedAt == request.time;
+
+      allow update: if isValidId(registrationId) &&
+        isValidRegistration(incoming(), registrationId) &&
+        incoming().updatedAt == request.time &&
+        (
+          // Action 1: Admin verification status toggle
+          (incoming().createdAt == existing().createdAt &&
+           incoming().diff(existing()).affectedKeys().hasOnly(['statusVerifikasi', 'updatedAt'])) ||
+          // Action 2: Idempotent re-sync / update of the same registration ID
+          (incoming().id == existing().id &&
+           incoming().diff(existing()).affectedKeys().hasOnly([
+             'nomorRegistrasi',
+             'tanggalDaftar',
+             'namaSekolah',
+             'namaKepalaSekolah',
+             'nipKepalaSekolah',
+             'namaPembinaPutra',
+             'nipPembinaPutra',
+             'namaPembinaPutra2',
+             'nipPembinaPutra2',
+             'namaPembinaPutri',
+             'nipPembinaPutri',
+             'namaPembinaPutri2',
+             'nipPembinaPutri2',
+             'namaReguPutra',
+             'namaReguPutri',
+             'pesertaPutra',
+             'tempatLahirPutra',
+             'tanggalLahirPutra',
+             'pesertaPutri',
+             'tempatLahirPutri',
+             'tanggalLahirPutri',
+             'jumlahRegu',
+             'totalBiaya',
+             'statusVerifikasi',
+             'pernyataanBenar',
+             'buktiPembayaran',
+             'createdAt',
+             'updatedAt'
+           ]))
+        );
+
+      allow delete: if isValidId(registrationId);
+    }
+
+    match /deleted_registrations/{registrationId} {
+      allow get: if isValidId(registrationId);
+      allow list: if resource.data.pernyataanBenar == true &&
+        request.query.limit != null &&
+        request.query.limit <= 500;
+
+      allow create: if isValidId(registrationId) &&
+        isValidDeletedRegistration(incoming(), registrationId) &&
+        incoming().createdAt == request.time &&
+        incoming().updatedAt == request.time;
+
+      allow update: if isValidId(registrationId) &&
+        isValidDeletedRegistration(incoming(), registrationId) &&
+        incoming().updatedAt == request.time &&
+        incoming().id == existing().id &&
+        incoming().diff(existing()).affectedKeys().hasOnly([
+          'nomorRegistrasi',
+          'tanggalDaftar',
+          'tanggalDihapus',
+          'namaSekolah',
+          'namaKepalaSekolah',
+          'nipKepalaSekolah',
+          'namaPembinaPutra',
+          'nipPembinaPutra',
+          'namaPembinaPutra2',
+          'nipPembinaPutra2',
+          'namaPembinaPutri',
+          'nipPembinaPutri',
+          'namaPembinaPutri2',
+          'nipPembinaPutri2',
+          'namaReguPutra',
+          'namaReguPutri',
+          'pesertaPutra',
+          'tempatLahirPutra',
+          'tanggalLahirPutra',
+          'pesertaPutri',
+          'tempatLahirPutri',
+          'tanggalLahirPutri',
+          'jumlahRegu',
+          'totalBiaya',
+          'statusVerifikasi',
+          'pernyataanBenar',
+          'buktiPembayaran',
+          'createdAt',
+          'updatedAt'
+        ]);
+
+      allow delete: if isValidId(registrationId);
+    }
+  }
+}

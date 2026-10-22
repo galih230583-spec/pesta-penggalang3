@@ -1,0 +1,374 @@
+{
+  "entities": {
+    "Registration": {
+      "title": "Registration",
+      "description": "School registration record for Pesta Penggalang Kecamatan Muara Kaman across accounts.",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique registration ID",
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "nomorRegistrasi": {
+          "type": "string",
+          "description": "Registration code (e.g. PP-MK-2026-1234)",
+          "maxLength": 64
+        },
+        "tanggalDaftar": {
+          "type": "string",
+          "description": "Formatted registration date string",
+          "maxLength": 100
+        },
+        "namaSekolah": {
+          "type": "string",
+          "description": "School / Pangkalan name",
+          "maxLength": 200
+        },
+        "namaKepalaSekolah": {
+          "type": "string",
+          "description": "Principal name",
+          "maxLength": 200
+        },
+        "nipKepalaSekolah": {
+          "type": "string",
+          "description": "Principal NIP",
+          "maxLength": 64
+        },
+        "namaPembinaPutra": {
+          "type": "string",
+          "description": "Male Scout Leader 1 name",
+          "maxLength": 200
+        },
+        "nipPembinaPutra": {
+          "type": "string",
+          "description": "Male Scout Leader 1 NIP",
+          "maxLength": 64
+        },
+        "namaPembinaPutra2": {
+          "type": "string",
+          "description": "Male Scout Leader 2 name",
+          "maxLength": 200
+        },
+        "nipPembinaPutra2": {
+          "type": "string",
+          "description": "Male Scout Leader 2 NIP",
+          "maxLength": 64
+        },
+        "namaPembinaPutri": {
+          "type": "string",
+          "description": "Female Scout Leader 1 name",
+          "maxLength": 200
+        },
+        "nipPembinaPutri": {
+          "type": "string",
+          "description": "Female Scout Leader 1 NIP",
+          "maxLength": 64
+        },
+        "namaPembinaPutri2": {
+          "type": "string",
+          "description": "Female Scout Leader 2 name",
+          "maxLength": 200
+        },
+        "nipPembinaPutri2": {
+          "type": "string",
+          "description": "Female Scout Leader 2 NIP",
+          "maxLength": 64
+        },
+        "namaReguPutra": {
+          "type": "string",
+          "description": "Male patrol name",
+          "maxLength": 120
+        },
+        "namaReguPutri": {
+          "type": "string",
+          "description": "Female patrol name",
+          "maxLength": 120
+        },
+        "pesertaPutra": {
+          "type": "array",
+          "description": "8 male participant names"
+        },
+        "tempatLahirPutra": {
+          "type": "array",
+          "description": "8 male participant birthplaces"
+        },
+        "tanggalLahirPutra": {
+          "type": "array",
+          "description": "8 male participant birthdates"
+        },
+        "pesertaPutri": {
+          "type": "array",
+          "description": "8 female participant names"
+        },
+        "tempatLahirPutri": {
+          "type": "array",
+          "description": "8 female participant birthplaces"
+        },
+        "tanggalLahirPutri": {
+          "type": "array",
+          "description": "8 female participant birthdates"
+        },
+        "jumlahRegu": {
+          "type": "number",
+          "description": "Number of patrols registered"
+        },
+        "totalBiaya": {
+          "type": "number",
+          "description": "Total registration fee in IDR"
+        },
+        "statusVerifikasi": {
+          "type": "string",
+          "description": "Verification status",
+          "enum": ["Menunggu Verifikasi", "Terverifikasi"],
+          "maxLength": 40
+        },
+        "pernyataanBenar": {
+          "type": "boolean",
+          "description": "Truthfulness declaration flag"
+        },
+        "buktiPembayaran": {
+          "type": "object",
+          "description": "Payment receipt metadata and image dataUrl"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server creation timestamp"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server update timestamp"
+        }
+      },
+      "required": [
+        "id",
+        "nomorRegistrasi",
+        "tanggalDaftar",
+        "namaSekolah",
+        "namaKepalaSekolah",
+        "nipKepalaSekolah",
+        "namaPembinaPutra",
+        "nipPembinaPutra",
+        "namaPembinaPutra2",
+        "nipPembinaPutra2",
+        "namaPembinaPutri",
+        "nipPembinaPutri",
+        "namaPembinaPutri2",
+        "nipPembinaPutri2",
+        "namaReguPutra",
+        "namaReguPutri",
+        "pesertaPutra",
+        "tempatLahirPutra",
+        "tanggalLahirPutra",
+        "pesertaPutri",
+        "tempatLahirPutri",
+        "tanggalLahirPutri",
+        "jumlahRegu",
+        "totalBiaya",
+        "statusVerifikasi",
+        "pernyataanBenar",
+        "buktiPembayaran",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "DeletedRegistration": {
+      "title": "DeletedRegistration",
+      "description": "Soft-deleted school registration record stored in Admin trash history so it can be restored anytime or permanently deleted.",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique registration ID",
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "nomorRegistrasi": {
+          "type": "string",
+          "description": "Registration code (e.g. PP-MK-2026-1234)",
+          "maxLength": 64
+        },
+        "tanggalDaftar": {
+          "type": "string",
+          "description": "Formatted registration date string",
+          "maxLength": 100
+        },
+        "tanggalDihapus": {
+          "type": "string",
+          "description": "Formatted deletion timestamp string",
+          "maxLength": 100
+        },
+        "namaSekolah": {
+          "type": "string",
+          "description": "School / Pangkalan name",
+          "maxLength": 200
+        },
+        "namaKepalaSekolah": {
+          "type": "string",
+          "description": "Principal name",
+          "maxLength": 200
+        },
+        "nipKepalaSekolah": {
+          "type": "string",
+          "description": "Principal NIP",
+          "maxLength": 64
+        },
+        "namaPembinaPutra": {
+          "type": "string",
+          "description": "Male Scout Leader 1 name",
+          "maxLength": 200
+        },
+        "nipPembinaPutra": {
+          "type": "string",
+          "description": "Male Scout Leader 1 NIP",
+          "maxLength": 64
+        },
+        "namaPembinaPutra2": {
+          "type": "string",
+          "description": "Male Scout Leader 2 name",
+          "maxLength": 200
+        },
+        "nipPembinaPutra2": {
+          "type": "string",
+          "description": "Male Scout Leader 2 NIP",
+          "maxLength": 64
+        },
+        "namaPembinaPutri": {
+          "type": "string",
+          "description": "Female Scout Leader 1 name",
+          "maxLength": 200
+        },
+        "nipPembinaPutri": {
+          "type": "string",
+          "description": "Female Scout Leader 1 NIP",
+          "maxLength": 64
+        },
+        "namaPembinaPutri2": {
+          "type": "string",
+          "description": "Female Scout Leader 2 name",
+          "maxLength": 200
+        },
+        "nipPembinaPutri2": {
+          "type": "string",
+          "description": "Female Scout Leader 2 NIP",
+          "maxLength": 64
+        },
+        "namaReguPutra": {
+          "type": "string",
+          "description": "Male patrol name",
+          "maxLength": 120
+        },
+        "namaReguPutri": {
+          "type": "string",
+          "description": "Female patrol name",
+          "maxLength": 120
+        },
+        "pesertaPutra": {
+          "type": "array",
+          "description": "8 male participant names"
+        },
+        "tempatLahirPutra": {
+          "type": "array",
+          "description": "8 male participant birthplaces"
+        },
+        "tanggalLahirPutra": {
+          "type": "array",
+          "description": "8 male participant birthdates"
+        },
+        "pesertaPutri": {
+          "type": "array",
+          "description": "8 female participant names"
+        },
+        "tempatLahirPutri": {
+          "type": "array",
+          "description": "8 female participant birthplaces"
+        },
+        "tanggalLahirPutri": {
+          "type": "array",
+          "description": "8 female participant birthdates"
+        },
+        "jumlahRegu": {
+          "type": "number",
+          "description": "Number of patrols registered"
+        },
+        "totalBiaya": {
+          "type": "number",
+          "description": "Total registration fee in IDR"
+        },
+        "statusVerifikasi": {
+          "type": "string",
+          "description": "Verification status",
+          "enum": ["Menunggu Verifikasi", "Terverifikasi"],
+          "maxLength": 40
+        },
+        "pernyataanBenar": {
+          "type": "boolean",
+          "description": "Truthfulness declaration flag"
+        },
+        "buktiPembayaran": {
+          "type": "object",
+          "description": "Payment receipt metadata and image dataUrl"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server creation timestamp"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server update timestamp"
+        }
+      },
+      "required": [
+        "id",
+        "nomorRegistrasi",
+        "tanggalDaftar",
+        "tanggalDihapus",
+        "namaSekolah",
+        "namaKepalaSekolah",
+        "nipKepalaSekolah",
+        "namaPembinaPutra",
+        "nipPembinaPutra",
+        "namaPembinaPutra2",
+        "nipPembinaPutra2",
+        "namaPembinaPutri",
+        "nipPembinaPutri",
+        "namaPembinaPutri2",
+        "nipPembinaPutri2",
+        "namaReguPutra",
+        "namaReguPutri",
+        "pesertaPutra",
+        "tempatLahirPutra",
+        "tanggalLahirPutra",
+        "pesertaPutri",
+        "tempatLahirPutri",
+        "tanggalLahirPutri",
+        "jumlahRegu",
+        "totalBiaya",
+        "statusVerifikasi",
+        "pernyataanBenar",
+        "buktiPembayaran",
+        "createdAt",
+        "updatedAt"
+      ]
+    }
+  },
+  "firestore": {
+    "/registrations/{registrationId}": {
+      "schema": {
+        "$ref": "#/entities/Registration"
+      },
+      "description": "Centralized school registrations collection accessible across all school accounts and the committee admin panel."
+    },
+    "/deleted_registrations/{registrationId}": {
+      "schema": {
+        "$ref": "#/entities/DeletedRegistration"
+      },
+      "description": "Recycle bin / deletion history of school registrations in the Admin panel, allowing full restoration or permanent deletion."
+    }
+  }
+}
